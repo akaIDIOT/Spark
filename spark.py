@@ -5,7 +5,7 @@ __version__ = (0, 2)
 __version_string__ = '.'.join(map(str, __version__))
 
 # taken from https://github.com/holman/spark
-TICKS = u'▁▂▃▄▅▆▇█' # TODO: add a space (0) in front?
+TICKS = u' ▁▂▃▄▅▆▇█'
 
 def spark(data, ticks = TICKS):
 	"""
