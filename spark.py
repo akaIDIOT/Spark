@@ -10,6 +10,19 @@ TICKS = u' ▁▂▃▄▅▆▇█'
 def spark(data, ticks = TICKS):
 	"""
 	Creates a unicode graph from a data series of numbers.
+
+	>>> # range of length ticks should be equal to ticks string
+	>>> ticks = u'0123456789'
+	>>> spark(range(len(ticks)), ticks)
+	u'0123456789'
+
+	>>> # no data should result in empty sparks string
+	>>> spark('')
+	u''
+
+	>>> # numbers should be rounded correctly
+	>>> spark((1, 2, 4, 5, 9), '01')
+	u'00011'
 	"""
 	# smile and wave, boys, smile and wave
 	if not data:
