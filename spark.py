@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding=UTF-8
 
-__version__ = (0, 1)
+__version__ = (0, 2)
 __version_string__ = '.'.join(map(str, __version__))
 
 # taken from https://github.com/holman/spark
@@ -22,8 +22,13 @@ def spark(data, ticks = TICKS):
 	return u''.join(map(lambda point: ticks[int(round((point - low) / diff * (len(ticks) - 1)))], data))
 
 if __name__ == '__main__':
-	# print a spark from the command line arguments
-	import sys
-	data = map(float, sys.argv[1:])
-	print spark(data)
+	import sys, shlex
+	# get arguments from command line
+	data = sys.argv[1:]
+	if not data and not sys.stdin.isatty():
+		# read a line from stdin, treat is as arguments when we're being piped / redirected
+		data = shlex.split(sys.stdin.readline())
+
+	# print the spark
+	print spark(map(float, data))
 
