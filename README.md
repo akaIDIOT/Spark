@@ -8,10 +8,11 @@ From the command line:
 
 ```
 user@box:~$ ./spark.py 1 2 3 4 5
-▁▃▅▆█
-user@box:~$ ./spark.py 5 12 42 13 6
-▁▂█▃▁
+ ▂▄▆█
+user@box:~$ ./spark.py 23 5 12 42 13 6 3 4
+▄ ▂█▂▁  
 user@box:~$ echo 1 2 3 4 7 2 | ./spark.py
+ ▁▃▄█▁
 ```
 
 From python:
