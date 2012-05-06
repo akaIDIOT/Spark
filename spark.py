@@ -1,6 +1,9 @@
 #!/usr/bin/env python
 # coding=UTF-8
 
+__version__ = (0, 1)
+__version_string__ = '.'.join(map(str, __version__))
+
 # taken from https://github.com/holman/spark
 TICKS = u'▁▂▃▄▅▆▇█' # TODO: add a space (0) in front?
 
