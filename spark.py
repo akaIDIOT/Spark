@@ -8,6 +8,9 @@ def spark(data, ticks = TICKS):
 	"""
 	Creates a unicode graph from a data series of numbers.
 	"""
+	# smile and wave, boys, smile and wave
+	if not data:
+		return u''
 	# find the absolute range
 	low = min(data)
 	# force it to a float to keep it from screwing with the division
