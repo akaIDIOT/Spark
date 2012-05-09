@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding=UTF-8
 
-__version__ = (0, 2, 1)
+__version__ = (0, 2, 2)
 __version_string__ = '.'.join(map(str, __version__))
 
 # taken from https://github.com/holman/spark
@@ -32,16 +32,19 @@ def spark(data, ticks = TICKS):
 	# force it to a float to keep it from screwing with the division
 	diff = float(max(data) - low)
 
-	# calculate the relative data values as 0.0 -- 1.0
-	sparks = map(lambda point: (point - low) / diff, data)
-	# calculate the relative data values as 0 -- index in ticks
-	sparks = map(lambda value: int(round(value * (len(ticks) - 1))), sparks)
-	# get the right character from ticks
-	sparks = map(lambda index: ticks[index], sparks)
+	sparks = []
+	for point in data:
+		# find the relative (range 0.0--1.0) value
+		point = (point - low) / diff
+		# turn relative value into rounded absolute value (range 0--len(ticks)-1)
+		point = int(round(point * (len(ticks) - 1)))
+		# append the tick character to the list
+		sparks.append(ticks[point])
 
 	# the above is equivalent to
 	# map(lambda point: ticks[int(round((point - low) / diff * (len(ticks) - 1)))], data)
 
+	# join the sparks into a single string
 	return u''.join(sparks)
 
 if __name__ == '__main__':
