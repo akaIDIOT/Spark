@@ -11,7 +11,7 @@ setup(
 	version = spark.__version_string__,
 	description = 'tool to create single line spark graphs',
 	author = 'Mattijs Ugen',
-	author_email = 'githup+spark@mattijs-ugen.nl',
+	author_email = 'tvguho+fcnex@nxnvqvbg.arg'.encode('rot13'),
 	url = 'https://github.com/akaIDIOT/Spark',
 	py_modules = modules,
 	scripts = ['spark.py']
