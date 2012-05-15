@@ -29,3 +29,8 @@ sparks = spark(range(16), u' ░▒▓█')
 sparks = spark([12, 14, 16, 14, 12], vrange = (0, None))
 ```
 
+Credits
+-------
+- @holman for coming up with the idea in the first place.
+- @matthijskooijman for suggesting spanning the output over multiple lines.
+
