@@ -15,6 +15,10 @@ user@box:~$ ./spark.py --min 0 12 23 17 14 32 16 31
 ▃▆▄▄██
 user@box:~$ echo 1 2 3 4 7 2 | ./spark.py
  ▁▃▄█▁
+user@box:~$ echo 1 2 5 4 7 2 | ./spark.py --lines 2
+  ▃ █ 
+ ▃███▃
+
 ```
 
 From python:
