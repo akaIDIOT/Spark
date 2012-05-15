@@ -4,7 +4,7 @@ A quick port of [Zach Holman (@holman)'s awesome `spark` script](https://github.
 
 Usage
 -----
-From the command line (protip: use ./spark -h):
+From the command line (protip: use `./spark -h`):
 
 ```
 user@box:~$ ./spark.py 1 2 3 4 5
