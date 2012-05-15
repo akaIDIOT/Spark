@@ -7,7 +7,7 @@ __version_string__ = '.'.join(map(str, __version__))
 # taken from https://github.com/holman/spark
 TICKS = u' ▁▂▃▄▅▆▇█'
 
-def spark(data, ticks = TICKS):
+def spark(data, ticks = TICKS, vrange = (None, None)):
 	"""
 	Creates a unicode graph from a data series of numbers.
 
@@ -23,14 +23,28 @@ def spark(data, ticks = TICKS):
 	>>> # numbers should be rounded correctly
 	>>> spark((1, 2, 4, 5, 9), '01')
 	u'00011'
+
+	>>> # lower and upper bounds should be respected
+	>>> spark((-3, -2, -1, 0, 1, 2, 3, 4, 5), '0123', (0, 3))
+	u'000012333'
 	"""
 	# smile and wave, boys, smile and wave
 	if not data:
 		return u''
 	# find the absolute range
 	low = min(data)
-	# force it to a float to keep it from screwing with the division
+	# if a lower bound is specified, set low and fix data accordingly
+	if vrange[0] is not None:
+		low = vrange[0]
+		# make sure no value is below lower bound
+		data = map(lambda point: max(point, low), data)
+
+	# find the difference (force to float for divisions later)
 	diff = float(max(data) - low)
+	if vrange[1] is not None:
+		diff = float(vrange[1] - low)
+		# make sure no value is over upper bound
+		data = map(lambda point: min(point, low + diff), data)
 
 	sparks = []
 	for point in data:
