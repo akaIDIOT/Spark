@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding=UTF-8
 
-__version__ = (0, 3)
+__version__ = (0, 4)
 __version_string__ = '.'.join(map(str, __version__))
 
 # taken from https://github.com/holman/spark
@@ -31,7 +31,12 @@ def spark(data, ticks = TICKS, vrange = (None, None), lines = 1):
 	>>> # lower and upper bounds should be respected
 	>>> spark((-3, -2, -1, 0, 1, 2, 3, 4, 5), '0123', (0, 3))
 	u'000012333'
+
+	>>> # multiline mode should produce the correct result
+	>>> spark((1,2,3,4,5), '0123', lines = 2)
+	u'00023\n02333'
 	"""
+
 	# smile and wave, boys, smile and wave
 	if not data:
 		return u''
