@@ -9,7 +9,9 @@ TICKS = u' ▁▂▃▄▅▆▇█'
 
 def spark(data, ticks = TICKS, vrange = (None, None)):
 	"""
-	Creates a unicode graph from a data series of numbers.
+	Creates a unicode graph from a data series of numbers. Argument vrange 
+	specifies lower and upper bounds as a tuple (lower, upper), None for 
+	either indicates no bound.
 
 	>>> # range of length ticks should be equal to ticks string
 	>>> ticks = u'0123456789'
