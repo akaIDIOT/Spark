@@ -33,6 +33,9 @@ def spark(data, ticks = TICKS, vrange = (None, None)):
 	# smile and wave, boys, smile and wave
 	if not data:
 		return u''
+	if vrange[0] is not None and vrange[1] is not None and vrange[1] - vrange[0] <= 0.0:
+		raise ValueError('erronous value range: {range}'.format(range = vrange))
+
 	# find the absolute range
 	low = min(data)
 	# if a lower bound is specified, set low and fix data accordingly
@@ -57,20 +60,23 @@ def spark(data, ticks = TICKS, vrange = (None, None)):
 		# append the tick character to the list
 		sparks.append(ticks[point])
 
-	# the above is equivalent to
-	# map(lambda point: ticks[int(round((point - low) / diff * (len(ticks) - 1)))], data)
-
 	# join the sparks into a single string
 	return u''.join(sparks)
 
 if __name__ == '__main__':
-	import sys, shlex
+	import argparse, shlex, sys
+
+	parser = argparse.ArgumentParser(description = 'Graph numerical data as an ascii graph')
+	parser.add_argument('--min', default = None, type = float, help = 'lower value bound', dest = 'min')
+	parser.add_argument('--max', default = None, type = float, help = 'upper value bound', dest = 'max')
+	parser.add_argument('data', nargs = '*', type = float, help = 'data to graph', metavar = 'VALUE')
+	args = parser.parse_args()
+
 	# get arguments from command line
-	data = sys.argv[1:]
-	if not data and not sys.stdin.isatty():
+	if not args.data and not sys.stdin.isatty():
 		# read a line from stdin, treat is as arguments when we're being piped / redirected
-		data = shlex.split(sys.stdin.readline())
+		args.data = shlex.split(sys.stdin.readline())
 
 	# print the spark
-	print spark(map(float, data))
+	print spark(map(float, args.data), vrange = (args.min, args.max))
 
