@@ -14,6 +14,6 @@ setup(
 	author_email = 'tvguho+fcnex@nxnvqvbg.arg'.encode('rot13'),
 	url = 'https://github.com/akaIDIOT/Spark',
 	py_modules = modules,
-	scripts = ['spark.py']
+	scripts = ['spark']
 )
 

@@ -1,7 +1,6 @@
-#!/usr/bin/env python
 # coding=UTF-8
 
-__version__ = (0, 4)
+__version__ = (0, 4, 1)
 __version_string__ = '.'.join(map(str, __version__))
 
 # taken from https://github.com/holman/spark
@@ -77,8 +76,8 @@ def spark(data, ticks = TICKS, vrange = (None, None), lines = 1):
 			point = u''
 		else:
 			# calculate the index of the character that fits best
-			#	modulate the data point by line_step to get the data that is not yet graphed
-			#	divide this value by line_step to get the relative value
+			#   modulate the data point by line_step to get the data that is not yet graphed
+			#   divide this value by line_step to get the relative value
 			#   multiply this by the length of the ticks string and round this to get the correct index
 			point = int(round((point * diff) % line_step / line_step * (len(ticks) - 1)))
 			point = ticks[point]
@@ -93,24 +92,4 @@ def spark(data, ticks = TICKS, vrange = (None, None), lines = 1):
 	
 	# join the lines on a newline to get the final value
 	return u'\n'.join(sparks)
-
-if __name__ == '__main__':
-	import argparse, shlex, sys
-
-	# create an argument parser for command line arguments
-	parser = argparse.ArgumentParser(description = 'Graph numerical data as an ascii graph')
-	parser.add_argument('--min', default = None, type = float, help = 'lower value bound', dest = 'min')
-	parser.add_argument('--max', default = None, type = float, help = 'upper value bound', dest = 'max')
-	parser.add_argument('--lines', default = 1, type = int, help = 'the number of lines to format the spark to', dest = 'lines')
-	parser.add_argument('data', nargs = '*', type = float, help = 'data to graph', metavar = 'VALUE')
-	# collect arguments in args
-	args = parser.parse_args()
-
-	# override args.data if no data specified
-	if not args.data and not sys.stdin.isatty():
-		# read a line from stdin, treat is as arguments when we're being piped / redirected
-		args.data = shlex.split(sys.stdin.readline())
-
-	# print the spark
-	print spark(map(float, args.data), vrange = (args.min, args.max), lines = args.lines)
 
