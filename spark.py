@@ -1,18 +1,22 @@
 # coding=UTF-8
 
+from math import ceil, floor
+
 __version__ = (0, 4, 1)
 __version_string__ = '.'.join(map(str, __version__))
 
 # taken from https://github.com/holman/spark
 TICKS = u' ▁▂▃▄▅▆▇█'
 
-def spark(data, ticks = TICKS, vrange = (None, None), lines = 1):
+def spark(data, ticks = TICKS, vrange = (None, None), lines = 1, span = None):
 	"""
 	Creates a unicode graph from a data series of numbers. Argument vrange 
 	specifies lower and upper bounds as a tuple (lower, upper), None for 
 	either indicates no bound. Argument lines specifies the number of lines 
 	the output should span. Be aware that this assumes ticks[0] to be 'empty
-	space' and ticks[len(ticks) - 1] to be 'filled space'.
+	space' and ticks[len(ticks) - 1] to be 'filled space'. Argument span makes
+	the spark span that number of characters, regardless of the size of the 
+	input, inter/extrapolating the data points as needed.
 
 	>>> # range of length ticks should be equal to ticks string
 	>>> ticks = u'0123456789'
@@ -41,7 +45,7 @@ def spark(data, ticks = TICKS, vrange = (None, None), lines = 1):
 		return u''
 	if vrange[0] is not None and vrange[1] is not None and vrange[1] - vrange[0] <= 0.0:
 		raise ValueError('erronous value range: {range}'.format(range = vrange))
-	if lines < 0:
+	if lines <= 0:
 		raise ValueError('cannot format to zero or less lines')
 
 	# find the absolute range
@@ -61,6 +65,35 @@ def spark(data, ticks = TICKS, vrange = (None, None), lines = 1):
 
 	# calculate the amount of data a single line would occupy
 	line_step = diff / lines
+
+	# update data if a span of different length is needed
+	if span and span is not len(data):
+		def split(interval):
+			# FIXME: something is still rather buggy in here (span over double length will create regular spikes, for example)
+			start, end = interval
+			if int(start) is int(end):
+				# value should be taken from a single data point
+				return (end - start) * data[int(start)]
+			else:
+				# value spans an index boundary
+				# take the right partition of the leftmost point to be used
+				value = (1 - start % 1) * data[int(start)]
+				# slice out the values that would be 'skipped' by this partition (possibly empty)
+				skipped = data[int(ceil(start)):int(end)]
+				# add its sum to the value
+				value += sum(skipped)
+				# add the left partition of the rightmost point to be used
+				value += (end % 1) * data[min(int(end), len(data) - 1)]
+
+				# return the average value over the interval
+				return value / (end - start)
+				
+		# calculate the width (amount of data) of a single spanned point
+		width = float(len(data)) / span
+		# create a list of tuples (start, end) to partition the data with
+		pieces = [(i * width, (i + 1) * width) for i in range(span)]
+		# split up the data with the created pieces
+		data = map(split, pieces)
 
 	columns = []
 	for point in data:
