@@ -8,6 +8,30 @@ __version_string__ = '.'.join(map(str, __version__))
 # taken from https://github.com/holman/spark
 TICKS = u' ▁▂▃▄▅▆▇█'
 
+def interval(data, interval):
+	"""
+	Calculates an appropriate value for an interval in the provided data. The
+	resulting value is an inter- or extrapolation.
+	"""
+	# FIXME: something is still rather buggy in here (span over double length will create regular spikes, for example)
+	start, end = interval
+	if int(start) is int(end):
+		# value should be taken from a single data point
+		return (end - start) * data[int(start)]
+	else:
+		# value spans an index boundary
+		# take the right partition of the leftmost point to be used
+		value = (1 - start % 1) * data[int(start)]
+		# slice out the values that would be 'skipped' by this partition (possibly empty)
+		skipped = data[int(ceil(start)):int(end)]
+		# add its sum to the value
+		value += sum(skipped)
+		# add the left partition of the rightmost point to be used
+		value += (end % 1) * data[min(int(end), len(data) - 1)]
+
+		# return the average value over the interval
+		return value / (end - start)
+
 def spark(data, ticks = TICKS, vrange = (None, None), lines = 1, span = None):
 	"""
 	Creates a unicode graph from a data series of numbers. Argument vrange
@@ -68,32 +92,12 @@ def spark(data, ticks = TICKS, vrange = (None, None), lines = 1, span = None):
 
 	# update data if a span of different length is needed
 	if span and span is not len(data):
-		def split(interval):
-			# FIXME: something is still rather buggy in here (span over double length will create regular spikes, for example)
-			start, end = interval
-			if int(start) is int(end):
-				# value should be taken from a single data point
-				return (end - start) * data[int(start)]
-			else:
-				# value spans an index boundary
-				# take the right partition of the leftmost point to be used
-				value = (1 - start % 1) * data[int(start)]
-				# slice out the values that would be 'skipped' by this partition (possibly empty)
-				skipped = data[int(ceil(start)):int(end)]
-				# add its sum to the value
-				value += sum(skipped)
-				# add the left partition of the rightmost point to be used
-				value += (end % 1) * data[min(int(end), len(data) - 1)]
-
-				# return the average value over the interval
-				return value / (end - start)
-
 		# calculate the width (amount of data) of a single spanned point
 		width = float(len(data)) / span
 		# create a list of tuples (start, end) to partition the data with
 		pieces = [(i * width, (i + 1) * width) for i in range(span)]
 		# split up the data with the created pieces
-		data = map(split, pieces)
+		data = map(lambda piece: interval(data, piece), pieces)
 
 	columns = []
 	for point in data:
