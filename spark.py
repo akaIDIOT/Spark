@@ -15,9 +15,10 @@ def interval(data, interval):
 	"""
 	# FIXME: something is still rather buggy in here (span over double length will create regular spikes, for example)
 	start, end = interval
+	length = end - start
 	if int(start) is int(end):
 		# value should be taken from a single data point
-		return (end - start) * data[int(start)]
+		return length * data[int(start)]
 	else:
 		# value spans an index boundary
 		# take the right partition of the leftmost point to be used
@@ -27,7 +28,7 @@ def interval(data, interval):
 		# add its sum to the value
 		value += sum(skipped)
 		# add the left partition of the rightmost point to be used
-		value += (end % 1) * data[min(int(end), len(data) - 1)]
+		value += (end % 1) * data[int(ceil(end)) - 1]
 
 		# return the average value over the interval
 		return value / (end - start)
