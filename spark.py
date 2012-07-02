@@ -10,12 +10,12 @@ TICKS = u' ▁▂▃▄▅▆▇█'
 
 def spark(data, ticks = TICKS, vrange = (None, None), lines = 1, span = None):
 	"""
-	Creates a unicode graph from a data series of numbers. Argument vrange 
-	specifies lower and upper bounds as a tuple (lower, upper), None for 
-	either indicates no bound. Argument lines specifies the number of lines 
+	Creates a unicode graph from a data series of numbers. Argument vrange
+	specifies lower and upper bounds as a tuple (lower, upper), None for
+	either indicates no bound. Argument lines specifies the number of lines
 	the output should span. Be aware that this assumes ticks[0] to be 'empty
 	space' and ticks[len(ticks) - 1] to be 'filled space'. Argument span makes
-	the spark span that number of characters, regardless of the size of the 
+	the spark span that number of characters, regardless of the size of the
 	input, inter/extrapolating the data points as needed.
 
 	>>> # range of length ticks should be equal to ticks string
@@ -87,7 +87,7 @@ def spark(data, ticks = TICKS, vrange = (None, None), lines = 1, span = None):
 
 				# return the average value over the interval
 				return value / (end - start)
-				
+
 		# calculate the width (amount of data) of a single spanned point
 		width = float(len(data)) / span
 		# create a list of tuples (start, end) to partition the data with
@@ -98,7 +98,7 @@ def spark(data, ticks = TICKS, vrange = (None, None), lines = 1, span = None):
 	columns = []
 	for point in data:
 		# find the relative (range 0.0--1.0) value
-		point = (point - low) / diff
+		point = (point - low) / diff if diff else 1.0
 		# calculate the number of 'empty lines'
 		empty = int((1.0 - point) * lines)
 		# calculate the number of 'full lines'
@@ -114,7 +114,7 @@ def spark(data, ticks = TICKS, vrange = (None, None), lines = 1, span = None):
 			#   multiply this by the length of the ticks string and round this to get the correct index
 			point = int(round((point * diff) % line_step / line_step * (len(ticks) - 1)))
 			point = ticks[point]
-		
+
 		# append the 'column' to the list
 		columns.append(ticks[0] * empty + point + ticks[len(ticks) - 1] * full)
 
@@ -122,7 +122,7 @@ def spark(data, ticks = TICKS, vrange = (None, None), lines = 1, span = None):
 	sparks = []
 	for line in range(lines):
 		sparks.append(u''.join(column[line] for column in columns))
-	
+
 	# join the lines on a newline to get the final value
 	return u'\n'.join(sparks)
 
