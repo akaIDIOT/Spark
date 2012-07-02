@@ -97,7 +97,7 @@ def spark(data, ticks = TICKS, vrange = (None, None), lines = 1, span = None):
 		# create a list of tuples (start, end) to partition the data with
 		pieces = [(i * width, (i + 1) * width) for i in range(span)]
 		# split up the data with the created pieces
-		data = map(lambda piece: interval(data, piece), pieces)
+		data = [interval(data, piece) for piece in pieces]
 
 	columns = []
 	for point in data:
