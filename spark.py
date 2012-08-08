@@ -6,7 +6,7 @@ __version__ = (0, 4, 1)
 __version_string__ = '.'.join(map(str, __version__))
 
 # taken from https://github.com/holman/spark
-TICKS = u' ▁▂▃▄▅▆▇█'
+TICKS = ' ▁▂▃▄▅▆▇█'
 
 def interval(data, interval):
 	"""
@@ -44,30 +44,30 @@ def spark(data, ticks = TICKS, vrange = (None, None), lines = 1, span = None):
 	input, inter/extrapolating the data points as needed.
 
 	>>> # range of length ticks should be equal to ticks string
-	>>> ticks = u'0123456789'
+	>>> ticks = '0123456789'
 	>>> spark(range(len(ticks)), ticks)
-	u'0123456789'
+	'0123456789'
 
 	>>> # no data should result in empty sparks string
 	>>> spark('')
-	u''
+	''
 
 	>>> # numbers should be rounded correctly
 	>>> spark((1, 2, 4, 5, 9), '01')
-	u'00011'
+	'00011'
 
 	>>> # lower and upper bounds should be respected
 	>>> spark((-3, -2, -1, 0, 1, 2, 3, 4, 5), '0123', (0, 3))
-	u'000012333'
+	'000012333'
 
 	>>> # multiline mode should produce the correct result
 	>>> spark((1,2,3,4,5), '0123', lines = 2)
-	u'00023\n02333'
+	'00023\\n02333'
 	"""
 
 	# smile and wave, boys, smile and wave
 	if not data:
-		return u''
+		return ''
 	if vrange[0] is not None and vrange[1] is not None and vrange[1] - vrange[0] <= 0.0:
 		raise ValueError('erronous value range: {range}'.format(range = vrange))
 	if lines <= 0:
@@ -111,7 +111,7 @@ def spark(data, ticks = TICKS, vrange = (None, None), lines = 1, span = None):
 
 		if empty + full == lines:
 			# point was exactly between two lines, no more chars needed
-			point = u''
+			point = ''
 		else:
 			# calculate the index of the character that fits best
 			#   modulate the data point by line_step to get the data that is not yet graphed
@@ -126,8 +126,8 @@ def spark(data, ticks = TICKS, vrange = (None, None), lines = 1, span = None):
 	# 'transpose' the 'matrix' to get lines rather than columns
 	sparks = []
 	for line in range(lines):
-		sparks.append(u''.join(column[line] for column in columns))
+		sparks.append(''.join(column[line] for column in columns))
 
 	# join the lines on a newline to get the final value
-	return u'\n'.join(sparks)
+	return '\n'.join(sparks)
 
